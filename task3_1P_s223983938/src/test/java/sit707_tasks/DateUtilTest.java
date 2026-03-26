@@ -6,8 +6,9 @@ import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
 /**
- * Comprehensive test suite for DateUtil transitions.
- * Includes every Month-End Increment, Month-Start Decrement, and Nominal cases.
+ * Test suite for DateUtil based on boundary value analysis test cases.
+ * A-series = decrement() tests (Expected Previous)
+ * B-series = increment() tests (Expected Next)
  * @author Teddy Yee
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -22,273 +23,433 @@ public class DateUtilTest {
     }
 
     @Test
-    public void test00_StudentIdentity() {
-        System.out.println("Student ID: 223983938");
-        Assert.assertNotNull("223983938");
+    public void test00_testStudentIdentity() {
+    	String studentId = "223983938";
+		Assert.assertNotNull("Student ID is ", studentId);
+    }
+    
+    
+    @Test
+    public void test00a_testStudentNamm() {
+    	 String studentName = "Tsz Hin Yee";
+    	 Assert.assertNotNull("Student name is ", studentName);
     }
 
-    // --- JANUARY / FEBRUARY ---
-    @Test
-    public void test01_Jan31ToFeb1_2024() {
-        DateUtil date = new DateUtil(31, 1, 2024);
-        DateUtil initial = new DateUtil(31, 1, 2024);
-        date.increment();
-        logTest("January End", initial, "increment()", date);
-        Assert.assertEquals(1, date.getDay());
-    }
+    // --- Day boundary tests (Month=6, Year=1994) ---
 
+    /** 01A: Day=1, Month=6, Year=1994 → Previous = 31-5-1994 */
     @Test
-    public void test02_Feb1ToJan31_2024() {
-        DateUtil date = new DateUtil(1, 2, 2024);
-        DateUtil initial = new DateUtil(1, 2, 2024);
+    public void test01A_Day1_Month6_Year1994_Decrement() {
+        DateUtil initial = new DateUtil(1, 6, 1994);
+        DateUtil date = new DateUtil(1, 6, 1994);
         date.decrement();
-        logTest("February Start", initial, "decrement()", date);
+        logTest("01A Day=1 Month=6 Year=1994 Decrement", initial, "decrement()", date);
         Assert.assertEquals(31, date.getDay());
+        Assert.assertEquals(5, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
     }
 
-    // --- FEBRUARY / MARCH (LEAP VS NON-LEAP) ---
+    /** 02A: Day=2, Month=6, Year=1994 → Previous = 1-6-1994 */
     @Test
-    public void test03_Feb29ToMar1_2024_Leap() {
-        DateUtil date = new DateUtil(29, 2, 2024);
-        DateUtil initial = new DateUtil(29, 2, 2024);
-        date.increment();
-        logTest("Leap Year Feb End (2024)", initial, "increment()", date);
+    public void test02A_Day2_Month6_Year1994_Decrement() {
+        DateUtil initial = new DateUtil(2, 6, 1994);
+        DateUtil date = new DateUtil(2, 6, 1994);
+        date.decrement();
+        logTest("02A Day=2 Month=6 Year=1994 Decrement", initial, "decrement()", date);
         Assert.assertEquals(1, date.getDay());
-    }
-
-    @Test
-    public void test04_Mar1ToFeb29_2024_Leap() {
-        DateUtil date = new DateUtil(1, 3, 2024);
-        DateUtil initial = new DateUtil(1, 3, 2024);
-        date.decrement();
-        logTest("March Start (Leap Year)", initial, "decrement()", date);
-        Assert.assertEquals(29, date.getDay());
-    }
-
-    @Test
-    public void test05_Feb28ToMar1_2023_NonLeap() {
-        DateUtil date = new DateUtil(28, 2, 2023);
-        DateUtil initial = new DateUtil(28, 2, 2023);
-        date.increment();
-        logTest("Non-Leap Feb End (2023)", initial, "increment()", date);
-        Assert.assertEquals(1, date.getDay());
-    }
-
-    @Test
-    public void test06_Mar1ToFeb28_2023_NonLeap() {
-        DateUtil date = new DateUtil(1, 3, 2023);
-        DateUtil initial = new DateUtil(1, 3, 2023);
-        date.decrement();
-        logTest("March Start (Non-Leap)", initial, "decrement()", date);
-        Assert.assertEquals(28, date.getDay());
-    }
-
-    // --- MARCH / APRIL ---
-    @Test
-    public void test07_Mar31ToApr1_2024() {
-        DateUtil date = new DateUtil(31, 3, 2024);
-        DateUtil initial = new DateUtil(31, 3, 2024);
-        date.increment();
-        logTest("March End", initial, "increment()", date);
-        Assert.assertEquals(4, date.getMonth());
-    }
-
-    @Test
-    public void test08_Apr1ToMar31_2024() {
-        DateUtil date = new DateUtil(1, 4, 2024);
-        DateUtil initial = new DateUtil(1, 4, 2024);
-        date.decrement();
-        logTest("April Start", initial, "decrement()", date);
-        Assert.assertEquals(31, date.getDay());
-    }
-
-    // --- APRIL / MAY ---
-    @Test
-    public void test09_Apr30ToMay1_2024() {
-        DateUtil date = new DateUtil(30, 4, 2024);
-        DateUtil initial = new DateUtil(30, 4, 2024);
-        date.increment();
-        logTest("April End (30 Days)", initial, "increment()", date);
-        Assert.assertEquals(1, date.getDay());
-    }
-
-    @Test
-    public void test10_May1ToApr30_2024() {
-        DateUtil date = new DateUtil(1, 5, 2024);
-        DateUtil initial = new DateUtil(1, 5, 2024);
-        date.decrement();
-        logTest("May Start", initial, "decrement()", date);
-        Assert.assertEquals(30, date.getDay());
-    }
-
-    // --- MAY / JUNE ---
-    @Test
-    public void test11_May31ToJun1_2024() {
-        DateUtil date = new DateUtil(31, 5, 2024);
-        DateUtil initial = new DateUtil(31, 5, 2024);
-        date.increment();
-        logTest("May End", initial, "increment()", date);
         Assert.assertEquals(6, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
     }
 
+    /** 03A: Day=15, Month=6, Year=1994 → Previous = 14-6-1994 */
     @Test
-    public void test12_Jun1ToMay31_2024() {
-        DateUtil date = new DateUtil(1, 6, 2024);
-        DateUtil initial = new DateUtil(1, 6, 2024);
+    public void test03A_Day15_Month6_Year1994_Decrement() {
+        DateUtil initial = new DateUtil(15, 6, 1994);
+        DateUtil date = new DateUtil(15, 6, 1994);
         date.decrement();
-        logTest("June Start", initial, "decrement()", date);
-        Assert.assertEquals(31, date.getDay());
+        logTest("03A Day=15 Month=6 Year=1994 Decrement", initial, "decrement()", date);
+        Assert.assertEquals(14, date.getDay());
+        Assert.assertEquals(6, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
     }
 
-    // --- JUNE / JULY ---
+    /** 04A: Day=30, Month=6, Year=1994 → Previous = 29-6-1994 */
     @Test
-    public void test13_Jun30ToJul1_2024() {
-        DateUtil date = new DateUtil(30, 6, 2024);
-        DateUtil initial = new DateUtil(30, 6, 2024);
-        date.increment();
-        logTest("June End (30 Days)", initial, "increment()", date);
-        Assert.assertEquals(7, date.getMonth());
-    }
-
-    @Test
-    public void test14_Jul1ToJun30_2024() {
-        DateUtil date = new DateUtil(1, 7, 2024);
-        DateUtil initial = new DateUtil(1, 7, 2024);
+    public void test04A_Day30_Month6_Year1994_Decrement() {
+        DateUtil initial = new DateUtil(30, 6, 1994);
+        DateUtil date = new DateUtil(30, 6, 1994);
         date.decrement();
-        logTest("July Start", initial, "decrement()", date);
-        Assert.assertEquals(30, date.getDay());
+        logTest("04A Day=30 Month=6 Year=1994 Decrement", initial, "decrement()", date);
+        Assert.assertEquals(29, date.getDay());
+        Assert.assertEquals(6, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
     }
 
-    // --- JULY / AUGUST ---
+    /** 05A: Day=31, Month=6, Year=1994 → Invalid Date (June has only 30 days) */
     @Test
-    public void test15_Jul31ToAug1_2024() {
-        DateUtil date = new DateUtil(31, 7, 2024);
-        DateUtil initial = new DateUtil(31, 7, 2024);
-        date.increment();
-        logTest("July End", initial, "increment()", date);
-        Assert.assertEquals(8, date.getMonth());
+    public void test05A_Day31_Month6_Year1994_InvalidDate() {
+        String desc = "05A Day=31 Month=6 Year=1994 Invalid Date";
+        try {
+            new DateUtil(31, 6, 1994);
+            Assert.fail("Expected RuntimeException for Day 31 in June");
+        } catch (RuntimeException e) {
+            System.out.println(String.format("[%s]", desc.toUpperCase()));
+            System.out.println("  Input:  31 June 1994");
+            System.out.println("  Action: new DateUtil()");
+            System.out.println("  Status: Caught expected exception: " + e.getMessage());
+            System.out.println("------------------------------------------");
+        }
     }
 
+    // --- Month boundary tests (Day=15, Year=1994) ---
+
+    /** 06A: Day=15, Month=1, Year=1994 → Previous = 14-1-1994 */
     @Test
-    public void test16_Aug1ToJul31_2024() {
-        DateUtil date = new DateUtil(1, 8, 2024);
-        DateUtil initial = new DateUtil(1, 8, 2024);
+    public void test06A_Day15_Month1_Year1994_Decrement() {
+        DateUtil initial = new DateUtil(15, 1, 1994);
+        DateUtil date = new DateUtil(15, 1, 1994);
         date.decrement();
-        logTest("August Start", initial, "decrement()", date);
-        Assert.assertEquals(31, date.getDay());
+        logTest("06A Day=15 Month=1 Year=1994 Decrement", initial, "decrement()", date);
+        Assert.assertEquals(14, date.getDay());
+        Assert.assertEquals(1, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
     }
 
-    // --- AUGUST / SEPTEMBER ---
+    /** 07A: Day=15, Month=2, Year=1994 → Previous = 14-2-1994 */
     @Test
-    public void test17_Aug31ToSep1_2024() {
-        DateUtil date = new DateUtil(31, 8, 2024);
-        DateUtil initial = new DateUtil(31, 8, 2024);
-        date.increment();
-        logTest("August End", initial, "increment()", date);
-        Assert.assertEquals(1, date.getDay());
-    }
-
-    @Test
-    public void test18_Sep1ToAug31_2024() {
-        DateUtil date = new DateUtil(1, 9, 2024);
-        DateUtil initial = new DateUtil(1, 9, 2024);
+    public void test07A_Day15_Month2_Year1994_Decrement() {
+        DateUtil initial = new DateUtil(15, 2, 1994);
+        DateUtil date = new DateUtil(15, 2, 1994);
         date.decrement();
-        logTest("September Start", initial, "decrement()", date);
-        Assert.assertEquals(31, date.getDay());
+        logTest("07A Day=15 Month=2 Year=1994 Decrement", initial, "decrement()", date);
+        Assert.assertEquals(14, date.getDay());
+        Assert.assertEquals(2, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
     }
 
-    // --- SEPTEMBER / OCTOBER ---
+    /** 08A: Day=15, Month=11, Year=1994 → Previous = 14-11-1994 */
     @Test
-    public void test19_Sep30ToOct1_2024() {
-        DateUtil date = new DateUtil(30, 9, 2024);
-        DateUtil initial = new DateUtil(30, 9, 2024);
-        date.increment();
-        logTest("September End (30 Days)", initial, "increment()", date);
-        Assert.assertEquals(10, date.getMonth());
-    }
-
-    @Test
-    public void test20_Oct1ToSep30_2024() {
-        DateUtil date = new DateUtil(1, 10, 2024);
-        DateUtil initial = new DateUtil(1, 10, 2024);
+    public void test08A_Day15_Month11_Year1994_Decrement() {
+        DateUtil initial = new DateUtil(15, 11, 1994);
+        DateUtil date = new DateUtil(15, 11, 1994);
         date.decrement();
-        logTest("October Start", initial, "decrement()", date);
-        Assert.assertEquals(30, date.getDay());
-    }
-
-    // --- OCTOBER / NOVEMBER ---
-    @Test
-    public void test21_Oct31ToNov1_2024() {
-        DateUtil date = new DateUtil(31, 10, 2024);
-        DateUtil initial = new DateUtil(31, 10, 2024);
-        date.increment();
-        logTest("October End", initial, "increment()", date);
+        logTest("08A Day=15 Month=11 Year=1994 Decrement", initial, "decrement()", date);
+        Assert.assertEquals(14, date.getDay());
         Assert.assertEquals(11, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
     }
 
+    /** 09A: Day=15, Month=12, Year=1994 → Previous = 14-12-1994 */
     @Test
-    public void test22_Nov1ToOct31_2024() {
-        DateUtil date = new DateUtil(1, 11, 2024);
-        DateUtil initial = new DateUtil(1, 11, 2024);
+    public void test09A_Day15_Month12_Year1994_Decrement() {
+        DateUtil initial = new DateUtil(15, 12, 1994);
+        DateUtil date = new DateUtil(15, 12, 1994);
         date.decrement();
-        logTest("November Start", initial, "decrement()", date);
-        Assert.assertEquals(31, date.getDay());
-    }
-
-    // --- NOVEMBER / DECEMBER ---
-    @Test
-    public void test23_Nov30ToDec1_2024() {
-        DateUtil date = new DateUtil(30, 11, 2024);
-        DateUtil initial = new DateUtil(30, 11, 2024);
-        date.increment();
-        logTest("November End (30 Days)", initial, "increment()", date);
+        logTest("09A Day=15 Month=12 Year=1994 Decrement", initial, "decrement()", date);
+        Assert.assertEquals(14, date.getDay());
         Assert.assertEquals(12, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
     }
 
+    // --- Year boundary tests (Day=15, Month=6) ---
+
+    /** 10A: Day=15, Month=6, Year=1700 → Previous = 14-6-1700 */
     @Test
-    public void test24_Dec1ToNov30_2024() {
-        DateUtil date = new DateUtil(1, 12, 2024);
-        DateUtil initial = new DateUtil(1, 12, 2024);
+    public void test10A_Day15_Month6_Year1700_Decrement() {
+        DateUtil initial = new DateUtil(15, 6, 1700);
+        DateUtil date = new DateUtil(15, 6, 1700);
         date.decrement();
-        logTest("December Start", initial, "decrement()", date);
-        Assert.assertEquals(30, date.getDay());
+        logTest("10A Day=15 Month=6 Year=1700 Decrement", initial, "decrement()", date);
+        Assert.assertEquals(14, date.getDay());
+        Assert.assertEquals(6, date.getMonth());
+        Assert.assertEquals(1700, date.getYear());
     }
 
-    // --- YEAR TRANSITIONS (Allowed range 1700-2024) ---
+    /** 11A: Day=15, Month=6, Year=1701 → Previous = 14-6-1701 */
     @Test
-    public void test25_Dec31ToJan1_YearTransition() {
-        DateUtil date = new DateUtil(31, 12, 2023);
-        DateUtil initial = new DateUtil(31, 12, 2023);
-        date.increment();
-        logTest("Year End Transition", initial, "increment()", date);
-        Assert.assertEquals(2024, date.getYear());
-    }
-
-    @Test
-    public void test26_Jan1ToDec31_YearTransitionBackwards() {
-        DateUtil date = new DateUtil(1, 1, 2024);
-        DateUtil initial = new DateUtil(1, 1, 2024);
+    public void test11A_Day15_Month6_Year1701_Decrement() {
+        DateUtil initial = new DateUtil(15, 6, 1701);
+        DateUtil date = new DateUtil(15, 6, 1701);
         date.decrement();
-        logTest("Year Start Transition (Backwards)", initial, "decrement()", date);
+        logTest("11A Day=15 Month=6 Year=1701 Decrement", initial, "decrement()", date);
+        Assert.assertEquals(14, date.getDay());
+        Assert.assertEquals(6, date.getMonth());
+        Assert.assertEquals(1701, date.getYear());
+    }
+
+    /** 12A: Day=15, Month=6, Year=2023 → Previous = 14-6-2023 */
+    @Test
+    public void test12A_Day15_Month6_Year2023_Decrement() {
+        DateUtil initial = new DateUtil(15, 6, 2023);
+        DateUtil date = new DateUtil(15, 6, 2023);
+        date.decrement();
+        logTest("12A Day=15 Month=6 Year=2023 Decrement", initial, "decrement()", date);
+        Assert.assertEquals(14, date.getDay());
+        Assert.assertEquals(6, date.getMonth());
         Assert.assertEquals(2023, date.getYear());
     }
 
-    // --- NOMINAL CASES (Mid-Month) ---
+    /** 13A: Day=15, Month=6, Year=2024 → Previous = 14-6-2024 */
     @Test
-    public void test27_NominalIncrement() {
-        DateUtil date = new DateUtil(15, 6, 2024);
+    public void test13A_Day15_Month6_Year2024_Decrement() {
         DateUtil initial = new DateUtil(15, 6, 2024);
-        date.increment();
-        logTest("Nominal Increment", initial, "increment()", date);
-        Assert.assertEquals(16, date.getDay());
+        DateUtil date = new DateUtil(15, 6, 2024);
+        date.decrement();
+        logTest("13A Day=15 Month=6 Year=2024 Decrement", initial, "decrement()", date);
+        Assert.assertEquals(14, date.getDay());
+        Assert.assertEquals(6, date.getMonth());
+        Assert.assertEquals(2024, date.getYear());
     }
 
+    // --- Leap year decrement cases ---
+
+    /** 14A: Day=28, Month=2, Year=2024 → Previous = 27-2-2024 */
     @Test
-    public void test28_NominalDecrement() {
-        DateUtil date = new DateUtil(15, 6, 2024);
-        DateUtil initial = new DateUtil(15, 6, 2024);
+    public void test14A_Day28_Month2_Year2024_Decrement() {
+        DateUtil initial = new DateUtil(28, 2, 2024);
+        DateUtil date = new DateUtil(28, 2, 2024);
         date.decrement();
-        logTest("Nominal Decrement", initial, "decrement()", date);
-        Assert.assertEquals(14, date.getDay());
+        logTest("14A Day=28 Month=2 Year=2024 Decrement", initial, "decrement()", date);
+        Assert.assertEquals(27, date.getDay());
+        Assert.assertEquals(2, date.getMonth());
+        Assert.assertEquals(2024, date.getYear());
+    }
+
+    /** 15A: Day=29, Month=2, Year=2024 → Previous = 28-2-2024 */
+    @Test
+    public void test15A_Day29_Month2_Year2024_Decrement() {
+        DateUtil initial = new DateUtil(29, 2, 2024);
+        DateUtil date = new DateUtil(29, 2, 2024);
+        date.decrement();
+        logTest("15A Day=29 Month=2 Year=2024 Decrement", initial, "decrement()", date);
+        Assert.assertEquals(28, date.getDay());
+        Assert.assertEquals(2, date.getMonth());
+        Assert.assertEquals(2024, date.getYear());
+    }
+
+    /** 16A: Day=1, Month=3, Year=2024 → Previous = 29-2-2024 (leap year) */
+    @Test
+    public void test16A_Day1_Month3_Year2024_Decrement() {
+        DateUtil initial = new DateUtil(1, 3, 2024);
+        DateUtil date = new DateUtil(1, 3, 2024);
+        date.decrement();
+        logTest("16A Day=1 Month=3 Year=2024 Decrement", initial, "decrement()", date);
+        Assert.assertEquals(29, date.getDay());
+        Assert.assertEquals(2, date.getMonth());
+        Assert.assertEquals(2024, date.getYear());
+    }
+
+    // =========================================================
+    // B-SERIES: increment() — Expected Next Date
+    // Day varies (01B–05B), Month varies (06B–09B), Year varies (10B–13B)
+    // Plus leap year cases (14B–17B)
+    // =========================================================
+
+    // --- Day boundary tests (Month=6, Year=1994) ---
+
+    /** 01B: Day=1, Month=6, Year=1994 → Next = 2-6-1994 */
+    @Test
+    public void test01B_Day1_Month6_Year1994_Increment() {
+        DateUtil initial = new DateUtil(1, 6, 1994);
+        DateUtil date = new DateUtil(1, 6, 1994);
+        date.increment();
+        logTest("01B Day=1 Month=6 Year=1994 Increment", initial, "increment()", date);
+        Assert.assertEquals(2, date.getDay());
+        Assert.assertEquals(6, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
+    }
+
+    /** 02B: Day=2, Month=6, Year=1994 → Next = 3-6-1994 */
+    @Test
+    public void test02B_Day2_Month6_Year1994_Increment() {
+        DateUtil initial = new DateUtil(2, 6, 1994);
+        DateUtil date = new DateUtil(2, 6, 1994);
+        date.increment();
+        logTest("02B Day=2 Month=6 Year=1994 Increment", initial, "increment()", date);
+        Assert.assertEquals(3, date.getDay());
+        Assert.assertEquals(6, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
+    }
+
+    /** 03B: Day=15, Month=6, Year=1994 → Next = 16-6-1994 */
+    @Test
+    public void test03B_Day15_Month6_Year1994_Increment() {
+        DateUtil initial = new DateUtil(15, 6, 1994);
+        DateUtil date = new DateUtil(15, 6, 1994);
+        date.increment();
+        logTest("03B Day=15 Month=6 Year=1994 Increment", initial, "increment()", date);
+        Assert.assertEquals(16, date.getDay());
+        Assert.assertEquals(6, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
+    }
+
+    /** 04B: Day=30, Month=6, Year=1994 → Next = 1-7-1994 */
+    @Test
+    public void test04B_Day30_Month6_Year1994_Increment() {
+        DateUtil initial = new DateUtil(30, 6, 1994);
+        DateUtil date = new DateUtil(30, 6, 1994);
+        date.increment();
+        logTest("04B Day=30 Month=6 Year=1994 Increment", initial, "increment()", date);
+        Assert.assertEquals(1, date.getDay());
+        Assert.assertEquals(7, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
+    }
+
+    /** 05B: Day=31, Month=6, Year=1994 → Invalid Date (June has only 30 days) */
+    @Test
+    public void test05B_Day31_Month6_Year1994_InvalidDate() {
+        String desc = "05B Day=31 Month=6 Year=1994 Invalid Date";
+        try {
+            new DateUtil(31, 6, 1994);
+            Assert.fail("Expected RuntimeException for Day 31 in June");
+        } catch (RuntimeException e) {
+            System.out.println(String.format("[%s]", desc.toUpperCase()));
+            System.out.println("  Input:  31 June 1994");
+            System.out.println("  Action: new DateUtil()");
+            System.out.println("  Status: Caught expected exception: " + e.getMessage());
+            System.out.println("------------------------------------------");
+        }
+    }
+
+    // --- Month boundary tests (Day=15, Year=1994) ---
+
+    /** 06B: Day=15, Month=1, Year=1994 → Next = 16-1-1994 */
+    @Test
+    public void test06B_Day15_Month1_Year1994_Increment() {
+        DateUtil initial = new DateUtil(15, 1, 1994);
+        DateUtil date = new DateUtil(15, 1, 1994);
+        date.increment();
+        logTest("06B Day=15 Month=1 Year=1994 Increment", initial, "increment()", date);
+        Assert.assertEquals(16, date.getDay());
+        Assert.assertEquals(1, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
+    }
+
+    /** 07B: Day=15, Month=2, Year=1994 → Next = 16-2-1994 */
+    @Test
+    public void test07B_Day15_Month2_Year1994_Increment() {
+        DateUtil initial = new DateUtil(15, 2, 1994);
+        DateUtil date = new DateUtil(15, 2, 1994);
+        date.increment();
+        logTest("07B Day=15 Month=2 Year=1994 Increment", initial, "increment()", date);
+        Assert.assertEquals(16, date.getDay());
+        Assert.assertEquals(2, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
+    }
+
+    /** 08B: Day=15, Month=11, Year=1994 → Next = 16-11-1994 */
+    @Test
+    public void test08B_Day15_Month11_Year1994_Increment() {
+        DateUtil initial = new DateUtil(15, 11, 1994);
+        DateUtil date = new DateUtil(15, 11, 1994);
+        date.increment();
+        logTest("08B Day=15 Month=11 Year=1994 Increment", initial, "increment()", date);
+        Assert.assertEquals(16, date.getDay());
+        Assert.assertEquals(11, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
+    }
+
+    /** 09B: Day=15, Month=12, Year=1994 → Next = 16-12-1994 */
+    @Test
+    public void test09B_Day15_Month12_Year1994_Increment() {
+        DateUtil initial = new DateUtil(15, 12, 1994);
+        DateUtil date = new DateUtil(15, 12, 1994);
+        date.increment();
+        logTest("09B Day=15 Month=12 Year=1994 Increment", initial, "increment()", date);
+        Assert.assertEquals(16, date.getDay());
+        Assert.assertEquals(12, date.getMonth());
+        Assert.assertEquals(1994, date.getYear());
+    }
+
+    // --- Year boundary tests (Day=15, Month=6) ---
+
+    /** 10B: Day=15, Month=6, Year=1700 → Next = 16-6-1700 */
+    @Test
+    public void test10B_Day15_Month6_Year1700_Increment() {
+        DateUtil initial = new DateUtil(15, 6, 1700);
+        DateUtil date = new DateUtil(15, 6, 1700);
+        date.increment();
+        logTest("10B Day=15 Month=6 Year=1700 Increment", initial, "increment()", date);
+        Assert.assertEquals(16, date.getDay());
+        Assert.assertEquals(6, date.getMonth());
+        Assert.assertEquals(1700, date.getYear());
+    }
+
+    /** 11B: Day=15, Month=6, Year=1701 → Next = 16-6-1701 */
+    @Test
+    public void test11B_Day15_Month6_Year1701_Increment() {
+        DateUtil initial = new DateUtil(15, 6, 1701);
+        DateUtil date = new DateUtil(15, 6, 1701);
+        date.increment();
+        logTest("11B Day=15 Month=6 Year=1701 Increment", initial, "increment()", date);
+        Assert.assertEquals(16, date.getDay());
+        Assert.assertEquals(6, date.getMonth());
+        Assert.assertEquals(1701, date.getYear());
+    }
+
+    /** 12B: Day=15, Month=6, Year=2023 → Next = 16-6-2023 */
+    @Test
+    public void test12B_Day15_Month6_Year2023_Increment() {
+        DateUtil initial = new DateUtil(15, 6, 2023);
+        DateUtil date = new DateUtil(15, 6, 2023);
+        date.increment();
+        logTest("12B Day=15 Month=6 Year=2023 Increment", initial, "increment()", date);
+        Assert.assertEquals(16, date.getDay());
+        Assert.assertEquals(6, date.getMonth());
+        Assert.assertEquals(2023, date.getYear());
+    }
+
+    /** 13B: Day=15, Month=6, Year=2024 → Next = 16-6-2024 */
+    @Test
+    public void test13B_Day15_Month6_Year2024_Increment() {
+        DateUtil initial = new DateUtil(15, 6, 2024);
+        DateUtil date = new DateUtil(15, 6, 2024);
+        date.increment();
+        logTest("13B Day=15 Month=6 Year=2024 Increment", initial, "increment()", date);
+        Assert.assertEquals(16, date.getDay());
+        Assert.assertEquals(6, date.getMonth());
+        Assert.assertEquals(2024, date.getYear());
+    }
+
+    // --- Leap year increment cases ---
+
+    /** 14B: Day=28, Month=2, Year=2024 → Next = 29-2-2024 (leap year) */
+    @Test
+    public void test14B_Day28_Month2_Year2024_Increment() {
+        DateUtil initial = new DateUtil(28, 2, 2024);
+        DateUtil date = new DateUtil(28, 2, 2024);
+        date.increment();
+        logTest("14B Day=28 Month=2 Year=2024 Increment", initial, "increment()", date);
+        Assert.assertEquals(29, date.getDay());
+        Assert.assertEquals(2, date.getMonth());
+        Assert.assertEquals(2024, date.getYear());
+    }
+
+    /** 15B: Day=29, Month=2, Year=2024 → Next = 1-3-2024 (leap year end) */
+    @Test
+    public void test15B_Day29_Month2_Year2024_Increment() {
+        DateUtil initial = new DateUtil(29, 2, 2024);
+        DateUtil date = new DateUtil(29, 2, 2024);
+        date.increment();
+        logTest("15B Day=29 Month=2 Year=2024 Increment", initial, "increment()", date);
+        Assert.assertEquals(1, date.getDay());
+        Assert.assertEquals(3, date.getMonth());
+        Assert.assertEquals(2024, date.getYear());
+    }
+
+    /** 17B: Day=30, Month=2, Year=2024 → Invalid date (February never has 30 days) */
+    @Test
+    public void test17B_Day30_Month2_Year2024_InvalidDate() {
+        String desc = "17B Day=30 Month=2 Year=2024 Invalid Date";
+        try {
+            new DateUtil(30, 2, 2024);
+            Assert.fail("Expected RuntimeException for Day 30 in February");
+        } catch (RuntimeException e) {
+            System.out.println(String.format("[%s]", desc.toUpperCase()));
+            System.out.println("  Input:  30 February 2024");
+            System.out.println("  Action: new DateUtil()");
+            System.out.println("  Status: Caught expected exception: " + e.getMessage());
+            System.out.println("------------------------------------------");
+        }
     }
 }
